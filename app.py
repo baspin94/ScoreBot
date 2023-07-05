@@ -31,7 +31,11 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # This function will be called to respond to a '/caps' command with what the text is in all caps.
 async def caps(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text_caps = ' '.join(context.args).upper()
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)    
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
+
+# This 'catch-all' last function will handle requests with unknown commands.
+async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command.")    
 
 if __name__ == '__main__':
 
@@ -49,6 +53,10 @@ if __name__ == '__main__':
 
     caps_handler = CommandHandler('caps', caps)
     application.add_handler(caps_handler)
+
+    # This handler needs to be added last or it will mess things up...
+    unknown_handler = MessageHandler(filters.COMMAND, unknown)
+    application.add_handler(unknown_handler)
 
     # Runs the bot until you cancel out of it.
     application.run_polling()
