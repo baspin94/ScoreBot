@@ -26,7 +26,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # This function will be called to respond to regular (non-command) messages.
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)    
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)
+
+# This function will be called to respond to a '/caps' command with what the text is in all caps.
+async def caps(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text_caps = ' '.join(context.args).upper()
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)    
 
 if __name__ == '__main__':
 
@@ -38,9 +43,12 @@ if __name__ == '__main__':
     application.add_handler(start_handler)
 
     # Now we'll add the echo handler here, too.
-
+    # The 'filters' module here is looking for anything which is a text-message which is not a command.
     echo_handler = MessageHandler(filters.TEXT & (~filters.COMMAND), echo)
     application.add_handler(echo_handler)
+
+    caps_handler = CommandHandler('caps', caps)
+    application.add_handler(caps_handler)
 
     # Runs the bot until you cancel out of it.
     application.run_polling()
